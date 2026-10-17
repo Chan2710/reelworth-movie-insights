@@ -213,6 +213,66 @@ if not token:
     st.stop()
 
 
+# --------------- SEARCH FOR A MOVIE ----------------
+st.divider()
+st.header("Find a movie by name")
+st.write("Search for a specific movie to explore its ratings and audience reviews.")
+
+search_col, button_col = st.columns([5, 1])
+
+with search_col:
+    movie_query = st.text_input(
+        "Movie title",
+        placeholder="Try Interstellar, 3 Idiots, or Dune",
+        key="title_search_input",
+    )
+
+with button_col:
+    st.write("")
+    search_clicked = st.button("Search", key="title_search_button", use_container_width=True)
+
+if search_clicked:
+    if not movie_query.strip():
+        st.warning("Please enter a movie title.")
+    else:
+        try:
+            search_data = tmdb(
+                "search/movie",
+                token,
+                {"query": movie_query.strip()},
+            )
+            st.session_state["title_search_results"] = search_data.get("results", [])
+        except requests.exceptions.RequestException as error:
+            st.error(f"Movie search failed: {error}")
+
+if st.session_state.get("title_search_results"):
+    search_results = st.session_state["title_search_results"]
+
+    movie_labels = [
+        f"{movie.get('title', 'Untitled')} ({(movie.get('release_date') or 'Unknown')[:4]})"
+        for movie in search_results
+    ]
+
+    selected_label = st.selectbox(
+        "Choose the movie you want",
+        movie_labels,
+        key="title_search_selection",
+    )
+
+    selected_movie = search_results[movie_labels.index(selected_label)]
+
+    st.image(
+        f"https://image.tmdb.org/t/p/w500{selected_movie['poster_path']}",
+        width=180,
+    ) if selected_movie.get("poster_path") else None
+
+    st.subheader(selected_movie.get("title", "Untitled"))
+    st.write(selected_movie.get("overview") or "No overview available.")
+    st.write(f"TMDB rating: {selected_movie.get('vote_average', 0):.1f}/10")
+
+# --------------- END SEARCH FOR A MOVIE ----------------
+
+
 # ---------------- MOVIE DISCOVERY ----------------
 st.divider()
 st.header("Discover your next movie")
