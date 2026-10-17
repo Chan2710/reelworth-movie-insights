@@ -441,25 +441,6 @@ if "movie_results" not in st.session_state:
     st.session_state.movie_results = []
 
 
-if st.button("Search movie"):
-    if not query.strip():
-        st.warning("Please enter a movie title.")
-    else:
-        try:
-            with st.spinner("Searching TMDB..."):
-                data = tmdb(
-                    "search/movie",
-                    token,
-                    {"query": query.strip()},
-                )
-                st.session_state.movie_results = data.get("results", [])
-                st.session_state["selected_movie_id"] = None
-        except requests.exceptions.RequestException as error:
-            st.error(f"TMDB search failed: {error}")
-            st.session_state.movie_results = []
-            st.session_state["selected_movie_id"] = None
-
-
 if st.session_state.movie_results:
     results = st.session_state.movie_results
 
