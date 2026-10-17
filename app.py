@@ -150,6 +150,13 @@ if discovery_results:
                 )
 
             st.markdown(f"**{movie.get('title', 'Untitled')}**")
+            if st.button(
+            "Analyze this movie",
+            key=f"analyze_movie_{movie['id']}",
+            ):
+            st.session_state["movie_search_query"] = movie.get("title", "")
+            st.session_state["selected_movie_id"] = movie["id"]
+            st.rerun()
 
             release_year = (
                 (movie.get("release_date") or "Unknown")[:4]
@@ -193,10 +200,15 @@ st.divider()
 # ---------------- END MOVIE DISCOVERY ----------------
 
 
-query = st.text_input("Enter a movie title", "Interstellar")
+query = st.text_input(
+    "Enter a movie title",
+    key="movie_search_query",
+    placeholder="Search for a movie...",
+)
 
 if "movie_results" not in st.session_state:
     st.session_state.movie_results = []
+
 
 if st.button("Search movie"):
     if not query.strip():
@@ -209,10 +221,13 @@ if st.button("Search movie"):
                     token,
                     {"query": query.strip()},
                 )
-            st.session_state.movie_results = data.get("results", [])
+                st.session_state.movie_results = data.get("results", [])
+                st.session_state["selected_movie_id"] = None
         except requests.exceptions.RequestException as error:
             st.error(f"TMDB search failed: {error}")
             st.session_state.movie_results = []
+            st.session_state["selected_movie_id"] = None
+
 
 if st.session_state.movie_results:
     results = st.session_state.movie_results
@@ -222,8 +237,25 @@ if st.session_state.movie_results:
         for m in results[:10]
     ]
 
-    selected = st.selectbox("Choose a movie", movie_names)
+
+    selected_movie_id = st.session_state.get("selected_movie_id")
+    
+    default_index = 0
+    
+    if selected_movie_id is not None:
+        for i, result in enumerate(results[:10]):
+            if result.get("id") == selected_movie_id:
+                default_index = i
+                break
+    
+    selected = st.selectbox(
+        "Choose a movie",
+        movie_names,
+        index=default_index,
+    )
+    
     movie = results[movie_names.index(selected)]
+
 
     try:
         details = tmdb(f"movie/{movie['id']}", token)
