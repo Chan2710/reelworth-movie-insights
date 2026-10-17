@@ -134,9 +134,9 @@ if st.session_state.movie_results:
 
             positive_share = counts["Positive"] / total
             rating_share = float(details.get("vote_average") or 0) / 10
-        score = 100 * (
-            0.65 * rating_share + 0.35 * positive_share
-        )
+            score = 100 * (
+                0.65 * rating_share + 0.35 * positive_share
+            )
 
             # Create a simple, explainable recommendation
             if score >= 75:
