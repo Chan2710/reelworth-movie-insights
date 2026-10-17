@@ -134,14 +134,48 @@ if st.session_state.movie_results:
 
             positive_share = counts["Positive"] / total
             rating_share = float(details.get("vote_average") or 0) / 10
-            score = 100 * (
-                0.65 * rating_share + 0.35 * positive_share
-            )
+        score = 100 * (
+            0.65 * rating_share + 0.35 * positive_share
+        )
 
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Reviews analyzed", total)
-            col2.metric("Positive reviews", f"{positive_share:.0%}")
-            col3.metric("ReelWorth score", f"{score:.0f}/100")
+        # Create a simple, explainable recommendation
+        if score >= 75:
+            verdict = "Worth watching"
+            explanation = "The rating and review sentiment are encouraging."
+        elif score >= 60:
+            verdict = "Worth considering"
+            explanation = "The overall signals are mixed or moderately positive."
+        else:
+            verdict = "Consider skipping"
+            explanation = "The current rating and review sentiment are less encouraging."
+        
+        # Show how much audience evidence is available
+        vote_count = details.get("vote_count", 0) or 0
+        
+        if total < 10:
+            confidence = "Limited review evidence"
+        elif vote_count < 100:
+            confidence = "Limited rating evidence"
+        else:
+            confidence = "More audience data available"
+        
+        st.subheader("Should you watch this movie?")
+        st.title(verdict)
+        st.write(explanation)
+        st.caption(
+            f"ReelWorth score: {score:.0f}/100 · "
+            f"TMDB votes: {vote_count:,} · "
+            f"Written reviews analyzed: {total}"
+        )
+        st.info(
+            f"Evidence note: {confidence}. "
+            "This is a simple indicator, not a guarantee of whether you will enjoy the film."
+        )
+        
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Reviews analyzed", total)
+        col2.metric("Positive reviews", f"{positive_share:.0%}")
+        col3.metric("ReelWorth score", f"{score:.0f}/100")
         else:
             st.info("No review text was available for this movie.")
 
