@@ -261,10 +261,13 @@ if st.session_state.get("title_search_results"):
 
     selected_movie = search_results[movie_labels.index(selected_label)]
 
-    st.image(
-        f"https://image.tmdb.org/t/p/w500{selected_movie['poster_path']}",
-        width=180,
-    ) if selected_movie.get("poster_path") else None
+
+    if selected_movie.get("poster_path"):
+        st.image(
+            f"https://image.tmdb.org/t/p/w500{selected_movie['poster_path']}",
+            width=180,
+        )
+
 
     st.subheader(selected_movie.get("title", "Untitled"))
     st.write(selected_movie.get("overview") or "No overview available.")
