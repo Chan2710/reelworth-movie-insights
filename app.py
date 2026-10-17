@@ -130,7 +130,7 @@ API = "https://api.themoviedb.org/3"
 IMG = "https://image.tmdb.org/t/p/w500"
 analyzer = SentimentIntensityAnalyzer()
 
-st.title("🎬 ReelWorth")
+st.title("🎬 CineScope")
 st.write("Movie insights powered by TMDB ratings and audience reviews.")
 
 
