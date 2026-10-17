@@ -437,13 +437,6 @@ elif "discovery_results" in st.session_state:
 st.divider()
 # ---------------- END MOVIE DISCOVERY ----------------
 
-
-query = st.text_input(
-    "Enter a movie title",
-    key="movie_search_query",
-    placeholder="Search for a movie...",
-)
-
 if "movie_results" not in st.session_state:
     st.session_state.movie_results = []
 
