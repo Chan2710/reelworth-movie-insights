@@ -124,14 +124,67 @@ section[data-testid="stSidebar"] {
 """, unsafe_allow_html=True)
 # ------------------------------------------------------------
 
-st.set_page_config(page_title="ReelWorth", page_icon="🎬", layout="wide")
+st.set_page_config(page_title="CineScope | Movie Insights", page_icon="🎬", layout="wide")
 
 API = "https://api.themoviedb.org/3"
 IMG = "https://image.tmdb.org/t/p/w500"
 analyzer = SentimentIntensityAnalyzer()
 
-st.title("🎬 CineScope")
-st.write("Movie insights powered by TMDB ratings and audience reviews.")
+
+left, right = st.columns([1.25, 1], gap="large")
+
+with left:
+    st.markdown(
+        """
+        <div style="padding: 24px 0 12px 0;">
+            <h1 style="font-size: 3rem; margin-bottom: 12px;">
+                🎬 CineScope
+            </h1>
+            <p style="font-size: 1.1rem; color: #c7c9dc;">
+                Movie insights powered by TMDB ratings and audience reviews.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with right:
+    st.markdown(
+        """
+        <div style="
+            margin-top: 18px;
+            padding: 28px;
+            min-height: 150px;
+            border-radius: 18px;
+            background: linear-gradient(120deg, #211d42, #39245f, #171b32);
+            border: 1px solid #514477;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.22);
+        ">
+            <div style="
+                color: #c4a7ff;
+                font-size: 0.8rem;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+            ">
+                YOUR PERSONAL MOVIE GUIDE
+            </div>
+            <h2 style="
+                color: white;
+                font-size: 1.8rem;
+                margin: 14px 0 8px 0;
+            ">
+                Find your next favorite film.
+            </h2>
+            <p style="color: #d0cde3; margin: 0;">
+                Discover stories. Compare ratings. Choose what to watch.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+st.divider()
+
 
 
 def get_token():
