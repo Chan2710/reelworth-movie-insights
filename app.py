@@ -40,6 +40,139 @@ if not token:
     st.stop()
 
 
+# ---------------- MOVIE DISCOVERY ----------------
+st.divider()
+st.header("Discover your next movie")
+st.write("Find something to watch based on your mood and taste.")
+
+mood_options = {
+    "Any mood": [],
+    "Feel-good": [35, 10751],
+    "Mind-bending": [878, 9648, 53],
+    "Laugh-out-loud": [35],
+    "Suspenseful": [53, 9648, 80],
+    "Epic adventure": [12, 14, 28],
+    "Romantic": [10749, 18],
+}
+
+genre_options = {
+    "Any genre": None,
+    "Action": 28,
+    "Adventure": 12,
+    "Animation": 16,
+    "Comedy": 35,
+    "Crime": 80,
+    "Documentary": 99,
+    "Drama": 18,
+    "Family": 10751,
+    "Fantasy": 14,
+    "Horror": 27,
+    "Mystery": 9648,
+    "Romance": 10749,
+    "Science Fiction": 878,
+    "Thriller": 53,
+}
+
+filter_col1, filter_col2 = st.columns(2)
+
+with filter_col1:
+    selected_mood = st.selectbox(
+        "Choose a mood",
+        list(mood_options.keys()),
+        key="discovery_mood",
+    )
+
+with filter_col2:
+    selected_genre = st.selectbox(
+        "Choose a genre",
+        list(genre_options.keys()),
+        key="discovery_genre",
+    )
+
+minimum_rating = st.slider(
+    "Minimum TMDB rating",
+    min_value=0.0,
+    max_value=9.0,
+    value=6.5,
+    step=0.5,
+    key="discovery_min_rating",
+)
+
+if st.button("Discover movies", key="discover_movies_button"):
+    try:
+        with st.spinner("Finding movies for you..."):
+            params = {
+                "sort_by": "popularity.desc",
+                "vote_count.gte": 50,
+                "vote_average.gte": minimum_rating,
+                "include_adult": False,
+                "page": 1,
+            }
+
+            mood_genres = mood_options[selected_mood]
+            chosen_genre = genre_options[selected_genre]
+
+            genre_ids = []
+
+            if mood_genres:
+                genre_ids.extend(mood_genres)
+
+            if chosen_genre is not None:
+                genre_ids.append(chosen_genre)
+
+            if genre_ids:
+                params["with_genres"] = ",".join(
+                    str(g) for g in dict.fromkeys(genre_ids)
+                )
+
+            discovery_data = tmdb("discover/movie", token, params)
+
+            st.session_state["discovery_results"] = (
+                discovery_data.get("results", [])
+            )
+
+    except requests.exceptions.RequestException as error:
+        st.error(f"Could not discover movies: {error}")
+
+discovery_results = st.session_state.get("discovery_results", [])
+
+if discovery_results:
+    st.subheader("Movies picked for you")
+
+    cards = st.columns(3)
+
+    for index, movie in enumerate(discovery_results[:9]):
+        with cards[index % 3]:
+            if movie.get("poster_path"):
+                st.image(
+                    IMG + movie["poster_path"],
+                    use_container_width=True,
+                )
+
+            st.markdown(f"**{movie.get('title', 'Untitled')}**")
+
+            release_year = (
+                (movie.get("release_date") or "Unknown")[:4]
+            )
+
+            st.caption(
+                f"{release_year} · "
+                f"TMDB rating {movie.get('vote_average', 0):.1f}/10"
+            )
+
+            overview = movie.get("overview") or "No overview available."
+            st.write(overview[:160] + ("..." if len(overview) > 160 else ""))
+
+elif "discovery_results" in st.session_state:
+    st.info(
+        "No movies matched those filters. Try another mood, genre, "
+        "or a lower minimum rating."
+    )
+
+st.divider()
+# ---------------- END MOVIE DISCOVERY ----------------
+
+
 query = st.text_input("Enter a movie title", "Interstellar")
 
 if "movie_results" not in st.session_state:
