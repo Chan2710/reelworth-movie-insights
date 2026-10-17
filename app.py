@@ -452,7 +452,7 @@ if discovery_results:
                     )
                     st.session_state["selected_movie_id"] = movie["id"]
                     st.session_state["movie_results"] = [movie]
-                    st.rerun()
+                    # st.rerun()
 
 elif "discovery_results" in st.session_state:
     st.info(
