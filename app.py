@@ -372,61 +372,84 @@ if st.button("Discover movies", key="discover_movies_button"):
 
 discovery_results = st.session_state.get("discovery_results", [])
 
+
 if discovery_results:
     st.subheader("Movies picked for you")
 
-    cards = st.columns(3)
+    cards = st.columns(3, gap="large")
 
     for index, movie in enumerate(discovery_results[:9]):
         with cards[index % 3]:
-            if movie.get("poster_path"):
-                st.image(
-                    IMG + movie["poster_path"],
-                      width=380,
+            with st.container(border=True):
+                # Movie poster
+                if movie.get("poster_path"):
+                    st.image(
+                        IMG + movie["poster_path"],
+                        use_container_width=True,
+                    )
+                else:
+                    st.caption("🎬 Poster unavailable")
+
+                # Movie title
+                st.markdown(
+                    f"### {movie.get('title', 'Untitled')}"
                 )
 
-            st.markdown(f"**{movie.get('title', 'Untitled')}**")
+                # Release year and rating
+                release_year = (
+                    (movie.get("release_date") or "Unknown")[:4]
+                )
+                rating = movie.get("vote_average", 0)
 
-            if st.button(
-                "Analyze this movie",
-                key=f"analyze_movie_{movie['id']}",
-            ):
-                st.session_state["movie_search_query"] = movie.get("title", "")
-                st.session_state["selected_movie_id"] = movie["id"]
-                st.session_state["movie_results"] = [movie]
-                st.rerun()
+                st.caption(
+                    f"🎞️ {release_year}  ·  ⭐ {rating:.1f}/10"
+                )
 
-            release_year = (
-                (movie.get("release_date") or "Unknown")[:4]
-            )
+                # Movie overview
+                overview = (
+                    movie.get("overview")
+                    or "No overview available."
+                )
+                st.write(
+                    overview[:160]
+                    + ("..." if len(overview) > 160 else "")
+                )
 
-            st.caption(
-                f"{release_year} · "
-                f"TMDB rating {movie.get('vote_average', 0):.1f}/10"
-            )
+                # Why this movie was recommended
+                reasons = []
 
-            
-            overview = movie.get("overview") or "No overview available."
-            st.write(overview[:160] + ("..." if len(overview) > 160 else ""))
-            
-            reasons = []
-            
-            if movie.get("vote_average", 0) >= 7.5:
-                reasons.append("Highly rated by TMDB users")
-            elif movie.get("vote_average", 0) >= 6.5:
-                reasons.append("Decent audience rating")
-            
-            if selected_mood != "Any mood":
-                reasons.append(f"Matches your {selected_mood.lower()} preference")
-            
-            if selected_genre != "Any genre":
-                reasons.append(f"Matches your {selected_genre.lower()} genre")
-            
-            if reasons:
-                st.caption("Why this pick?")
-                for reason in reasons:
-                    st.write(f"• {reason}")
-            
+                if rating >= 7.5:
+                    reasons.append("Highly rated by TMDB users")
+                elif rating >= 6.5:
+                    reasons.append("Decent audience rating")
+
+                if selected_mood != "Any mood":
+                    reasons.append(
+                        f"Matches your {selected_mood.lower()} preference"
+                    )
+
+                if selected_genre != "Any genre":
+                    reasons.append(
+                        f"Matches your {selected_genre.lower()} genre"
+                    )
+
+                if reasons:
+                    st.markdown("**Why this pick?**")
+                    for reason in reasons:
+                        st.caption(f"✓ {reason}")
+
+                # Analyze button
+                if st.button(
+                    "Analyze this movie",
+                    key=f"analyze_movie_{movie['id']}",
+                    use_container_width=True,
+                ):
+                    st.session_state["movie_search_query"] = (
+                        movie.get("title", "")
+                    )
+                    st.session_state["selected_movie_id"] = movie["id"]
+                    st.session_state["movie_results"] = [movie]
+                    st.rerun()
 
 elif "discovery_results" in st.session_state:
     st.info(
