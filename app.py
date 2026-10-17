@@ -150,13 +150,15 @@ if discovery_results:
                 )
 
             st.markdown(f"**{movie.get('title', 'Untitled')}**")
+
             if st.button(
-            "Analyze this movie",
-            key=f"analyze_movie_{movie['id']}",
+                "Analyze this movie",
+                key=f"analyze_movie_{movie['id']}",
             ):
-            st.session_state["movie_search_query"] = movie.get("title", "")
-            st.session_state["selected_movie_id"] = movie["id"]
-            st.rerun()
+                st.session_state["movie_search_query"] = movie.get("title", "")
+                st.session_state["selected_movie_id"] = movie["id"]
+                st.session_state["movie_results"] = [movie]
+                st.rerun()
 
             release_year = (
                 (movie.get("release_date") or "Unknown")[:4]
