@@ -444,8 +444,9 @@ if discovery_results:
                     key=f"analyze_movie_{movie['id']}",
                     use_container_width=True,
                 ):
-                    st.success("Button clicked!")
-                    
+                    # st.success("Button clicked!")
+                    st.write("DEBUG: Analyze button clicked")
+                    st.session_state["analyze_debug"] = True
                     st.session_state["movie_search_query"] = (
                         movie.get("title", "")
                     )
