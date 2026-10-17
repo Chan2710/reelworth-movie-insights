@@ -160,8 +160,28 @@ if discovery_results:
                 f"TMDB rating {movie.get('vote_average', 0):.1f}/10"
             )
 
+            
             overview = movie.get("overview") or "No overview available."
             st.write(overview[:160] + ("..." if len(overview) > 160 else ""))
+            
+            reasons = []
+            
+            if movie.get("vote_average", 0) >= 7.5:
+                reasons.append("Highly rated by TMDB users")
+            elif movie.get("vote_average", 0) >= 6.5:
+                reasons.append("Decent audience rating")
+            
+            if selected_mood != "Any mood":
+                reasons.append(f"Matches your {selected_mood.lower()} preference")
+            
+            if selected_genre != "Any genre":
+                reasons.append(f"Matches your {selected_genre.lower()} genre")
+            
+            if reasons:
+                st.caption("Why this pick?")
+                for reason in reasons:
+                    st.write(f"• {reason}")
+            
 
 elif "discovery_results" in st.session_state:
     st.info(
