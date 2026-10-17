@@ -146,7 +146,7 @@ if discovery_results:
             if movie.get("poster_path"):
                 st.image(
                     IMG + movie["poster_path"],
-                    use_container_width=True,
+                      width=180,
                 )
 
             st.markdown(f"**{movie.get('title', 'Untitled')}**")
