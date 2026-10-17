@@ -4,6 +4,126 @@ import pandas as pd
 import streamlit as st
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
+
+# ---------------- CINEMATIC REELWORTH THEME ----------------
+st.markdown("""
+<style>
+/* Overall app background and typography */
+.stApp {
+    background: linear-gradient(135deg, #0B1020 0%, #11182B 55%, #151126 100%);
+    color: #F8FAFC;
+}
+
+html, body, [class*="css"] {
+    font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+/* Main content spacing */
+.block-container {
+    max-width: 1400px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+/* Headings */
+h1, h2, h3 {
+    color: #F8FAFC !important;
+    letter-spacing: -0.4px;
+}
+
+h1 {
+    font-weight: 800 !important;
+}
+
+h2 {
+    border-bottom: 1px solid #303951;
+    padding-bottom: 0.45rem;
+}
+
+/* Paragraphs and supporting text */
+p, label, .stMarkdown, [data-testid="stCaptionContainer"] {
+    color: #C3CCDD;
+}
+
+/* Inputs, search boxes and dropdowns */
+.stTextInput input,
+.stSelectbox div[data-baseweb="select"] > div,
+.stNumberInput input {
+    background-color: #171E31 !important;
+    color: #F8FAFC !important;
+    border: 1px solid #35415C !important;
+    border-radius: 10px !important;
+}
+
+/* Sliders */
+.stSlider [data-baseweb="slider"] div[role="slider"] {
+    background-color: #A78BFA;
+}
+
+/* Buttons */
+.stButton > button {
+    background: linear-gradient(135deg, #A78BFA, #8065D9);
+    color: #FFFFFF !important;
+    border: 1px solid #B9A5FF;
+    border-radius: 10px;
+    padding: 0.55rem 1.1rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.stButton > button:hover {
+    background: linear-gradient(135deg, #B9A5FF, #9278EC);
+    border-color: #D4C7FF;
+    transform: translateY(-1px);
+}
+
+/* Metric cards */
+[data-testid="stMetric"] {
+    background: #171E31;
+    border: 1px solid #303951;
+    padding: 1rem;
+    border-radius: 14px;
+}
+
+/* Charts and data panels */
+[data-testid="stPlotlyChart"],
+[data-testid="stVegaLiteChart"],
+[data-testid="stDataFrame"] {
+    background-color: #171E31;
+    border-radius: 14px;
+}
+
+/* Expanders and bordered containers */
+[data-testid="stExpander"],
+[data-testid="stVerticalBlockBorderWrapper"] {
+    border-color: #303951 !important;
+    border-radius: 12px;
+}
+
+/* Dividers */
+hr {
+    border-color: #303951 !important;
+}
+
+/* Links */
+a {
+    color: #B9A5FF !important;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #0E1424;
+    border-right: 1px solid #303951;
+}
+
+/* Alerts */
+[data-testid="stAlert"] {
+    border-radius: 12px;
+}
+</style>
+""", unsafe_allow_html=True)
+# ------------------------------------------------------------
+
 st.set_page_config(page_title="ReelWorth", page_icon="🎬", layout="wide")
 
 API = "https://api.themoviedb.org/3"
