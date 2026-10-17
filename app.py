@@ -35,7 +35,7 @@ def tmdb(endpoint, token, params=None):
 
 token = get_token()
 
-if not token:f
+if not token:
     st.error("TMDB_TOKEN is missing. Add it to Streamlit Cloud → Manage app → Settings → Secrets.")
     st.stop()
 
